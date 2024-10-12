@@ -26,4 +26,4 @@ La nostra webapp sarà fatta in Python e PHP, Oltre a Html, CSS, Javascript e Bo
 4) Una volta elaborata, la risposta, ci verrà inviata sulla nostra app.
 -- La risposta ritornata dall'api può essere TRUE(Abbiamo i dati del prodotto) o FALSE(Not found)--
 5) In caso di true il gestore del negozio può eseguire delle operazioni e salvare il JSON su wordpress tramite API.
-6) Come ultimo step Wordpress ci comunica se il salvataggio è andato a buon fine!!
+6) Come ultimo step Wordpress ci comunica se il salvataggio è andato a buon fine!
