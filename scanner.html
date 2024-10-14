@@ -1,0 +1,150 @@
+<!-- HO SPOSTATO TUTTO IL DODICE JAVASCRIPT E CSS QUI !! -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Codice a Barre</title>
+    <script src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f4f4f9;
+        }
+
+        .scanner-app {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #scanner-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            margin-bottom: 15px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px dashed rgba(255, 255, 255, 0.7);
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #333;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanner-app">
+        <h1>Scanner Codice a Barre</h1>
+        <div id="scanner-container">
+            <div class="overlay"></div> <!-- Overlay per migliorare l'esperienza visiva -->
+        </div>
+        <input type="text" id="input-barcode" placeholder="Il codice a barre verrà inserito qui" readonly />
+        <button id="start-scan">Avvia Scansione</button>
+    </div>
+
+    <script>
+        // Inizializziamo una variabile per controllare lo stato di avvio
+        let isScanning = false;
+
+        // Funzione per avviare la scansione
+        function startScanning() {
+            if (isScanning) return; // Evitiamo di avviare la scansione se è già in corso
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner-container'),
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                Quagga.start();
+                isScanning = true; // Imposta lo stato della scansione
+            });
+
+            Quagga.onDetected(function(data) {
+                var codiceBarre = data.codeResult.code;
+                document.getElementById("input-barcode").value = codiceBarre;
+                Quagga.stop();
+                isScanning = false; // Ritorna allo stato di non scansione
+            });
+        }
+
+        // Aggiungiamo un listener al pulsante per avviare la scansione
+        document.getElementById("start-scan").addEventListener("click", function() {
+            startScanning();
+        });
+    </script>
+
+</body>
+</html>
